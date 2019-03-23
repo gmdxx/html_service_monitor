@@ -1,131 +1,46 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>MyServices Monitor</title>
-		<meta charset="UTF-8"/>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"></<link>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script>
-			function main() {
-				startClock();
-			}
-			
-			function resetClock() {
-				stopClock();
-				startClock();
-			}
-			
-			function startClock() {
-				var interval = Number(opt_clock_interval.value) * 1000;
-				$(btn_play_clock).hide();
-				$(btn_stop_clock).show();
-				clock.parentNode.className = "btn btn-success";
-				updateClock();
-				
-				timer = setInterval(function() {
-					updateClock();
-				}, interval);
-			}
-			
-			function updateClock() {
-				now = new Date();
-				clock.innerHTML = now.toLocaleString();
-				loadData();
-			}
-			
-			function stopClock() {
-				for(var x = 0; x <= timer; ++x ) {
-					clearTimeout(x);
-				}
-				
-				timer = 0;
-				clock.parentNode.className = "btn btn-danger";
-				$(btn_play_clock).show();
-				$(btn_stop_clock).hide();
-			}
-			
-			function loadData () {
-				$.getJSON("index.json", function(data, status) {
-					if(status == "success") {
-						renderForm(data);
-					}
-					else {
-						alert("Error al cargar informacion, Estado : " + status);
-						renderForm(null);
-					}
-				});
-			}
-			
-			function renderForm(data) {
-				if(data)
-				{
-					var ul, li;
-					
-					if(data.mysql_status == "OK")
-						mysqld_panel.className = "panel panel-success";
-					else
-						mysqld_panel.className = "panel panel-danger";
-					
-					mysqld_panel_body.innerHTML = ""
-					
-					ul = document.createElement("ul");
-					
-					li = document.createElement("li");
-					li.innerHTML = "<b>Estado</b>: " + data.mysql_status;
-					ul.appendChild(li)
-					
-					li = document.createElement("li");
-					li.innerHTML = "<b>Último Analisis</b>: " + data.last_task_execution + " (Hora del servidor)";
-					ul.appendChild(li)
-					
-					li = document.createElement("li");
-					li.innerHTML = "<b>PATH</b>: " + data.sys_path;
-					ul.appendChild(li)
-					
-					mysqld_panel_body.appendChild(ul);
-				}
-				else
-				{
-					mysqld_panel.className = "panel panel-danger";
-					stopClock();
-				}
-			}
-		</script>
-	</head>
-	<body onload="main()">
-		<div>
-			<br/>
-			<div>
-				<div class="btn btn-default" id="btn_play_clock" name="btn_play_clock" onclick="startClock();">
-					<span class="glyphicon glyphicon-play"></span>
-				</div>
-				<div class="btn btn-default"  id="btn_stop_clock" name="btn_stop_clock" onclick="stopClock();">
-					<span class="glyphicon glyphicon-stop"></span>
-				</div>
-				<div class="btn btn-default"  id="btn_refresh_clock" name="btn_refresh_clock" onclick="updateClock();">
-					<span class="glyphicon glyphicon-refresh"></span>
-				</div>
-				<select class="btn btn-basic" id="opt_clock_interval" name="opt_clock_interval" onchange="resetClock()">
-					<option value="1">1 segundo</option>
-					<option value="2">2 segundos</option>
-					<option value="5">5 segundos</option>
-					<option value="10">10 segundos</option>
-					<option value="15">15 segundos</option>
-					<option value="30">30 segundos</option>
-					<option value="60">1 minuto</option>
-					<option value="300">5 minutos</option>
-				</select>
-				<div class="btn btn-default">
-					<span name="clock" id="clock">Espere...</span>
-				</div>
-			</div>
-			<br/>
-			<div class="panel-group">
-				<div class="panel panel-default" id="mysqld_panel" name="mysqld_panel">
-					<div class="panel-heading">Servicio: Mysqld</div>
-					<div class="panel-body" id="mysqld_panel_body" name="mysqld_panel_body"></div>
-				</div>
-			</div>
-		</div>
-	</body>
+    <head>
+        <title>MyServices Monitor</title>
+        <meta charset="UTF-8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div>
+            <br/>
+            <div>
+                <div class="btn btn-default" id="btn_play_clock" name="btn_play_clock" onclick="startClock();">
+                    <span class="glyphicon glyphicon-play"></span>
+                </div>
+                <div class="btn btn-default"  id="btn_stop_clock" name="btn_stop_clock" onclick="stopClock();">
+                    <span class="glyphicon glyphicon-stop"></span>
+                </div>
+                <div class="btn btn-default"  id="btn_refresh_clock" name="btn_refresh_clock" onclick="updateClock();">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </div>
+                <select class="btn btn-basic" id="opt_clock_interval" name="opt_clock_interval" onchange="resetClock()">
+                    <option value="1">1 segundo</option>
+                    <option value="2">2 segundos</option>
+                    <option value="5">5 segundos</option>
+                    <option value="10">10 segundos</option>
+                    <option value="15">15 segundos</option>
+                    <option value="30">30 segundos</option>
+                    <option value="60">1 minuto</option>
+                    <option value="300">5 minutos</option>
+                </select>
+                <div class="btn btn-default">
+                    <span name="clock" id="clock">Espere...</span>
+                </div>
+            </div>
+            <br/>
+            <div class="panel-group">
+                <div class="panel panel-default" id="mysqld_panel" name="mysqld_panel">
+                    <div class="panel-heading">Servicio: Mysqld</div>
+                    <div class="panel-body" id="mysqld_panel_body" name="mysqld_panel_body"></div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="index.js"></script>
+    </body>
 </html>

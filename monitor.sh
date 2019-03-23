@@ -14,9 +14,9 @@ code=$?
 
 if [ $code = "0" ]
 then
-        status="OK"
+    status="OK"
 else
-        status="ERROR"
+    status="ERROR"
 fi
 
 
